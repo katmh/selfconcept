@@ -3,6 +3,7 @@ import SwiftUI
 struct ReadView: View {
     @Environment(AppViewModel.self) var viewModel
     @State private var selectedWindow = 7
+    @State private var showAddIdentity = false
     let windowOptions = [7, 14, 30]
 
     var body: some View {
@@ -24,7 +25,7 @@ struct ReadView: View {
                             .foregroundColor(.gray)
                         Text("Nothing to see yet")
                             .font(.headline)
-                        Text("Go to Setup to add your first identity")
+                        Text("Tap the + button to add your first identity")
                             .foregroundColor(.gray)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -45,6 +46,18 @@ struct ReadView: View {
                 }
             }
             .navigationTitle("Read")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showAddIdentity = true }) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 18))
+                    }
+                }
+            }
+            .sheet(isPresented: $showAddIdentity) {
+                AddIdentitySheet(isPresented: $showAddIdentity)
+                    .environment(viewModel)
+            }
         }
     }
 }

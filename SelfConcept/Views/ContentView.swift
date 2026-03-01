@@ -17,12 +17,6 @@ struct ContentView: View {
                     Label("Write", systemImage: "pencil")
                 }
                 .tag(1)
-
-            SetupView()
-                .tabItem {
-                    Label("Setup", systemImage: "gear")
-                }
-                .tag(2)
         }
     }
 }
