@@ -21,6 +21,36 @@ enum FrequencyType: Codable {
             return "\(count)x per month"
         }
     }
+
+    enum CodingKeys: String, CodingKey {
+        case perWeek, perMonth
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let value = try container.decodeIfPresent(Int.self, forKey: .perWeek) {
+            self = .perWeek(value)
+        } else if let value = try container.decodeIfPresent(Int.self, forKey: .perMonth) {
+            self = .perMonth(value)
+        } else {
+            throw DecodingError.dataCorrupted(
+                DecodingError.Context(
+                    codingPath: decoder.codingPath,
+                    debugDescription: "Invalid FrequencyType"
+                )
+            )
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .perWeek(let count):
+            try container.encode(count, forKey: .perWeek)
+        case .perMonth(let count):
+            try container.encode(count, forKey: .perMonth)
+        }
+    }
 }
 
 struct Identity: Codable, Identifiable {
