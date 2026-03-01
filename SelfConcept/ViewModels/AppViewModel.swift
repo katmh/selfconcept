@@ -21,8 +21,8 @@ class AppViewModel {
 
     // MARK: - Identity Management
 
-    func addIdentity(name: String, action: String) {
-        let identity = Identity(name: name, action: action)
+    func addIdentity(name: String, action: String, frequency: FrequencyType) {
+        let identity = Identity(name: name, action: action, frequency: frequency)
         appData.identities.append(identity)
         saveData()
     }
@@ -107,14 +107,15 @@ class AppViewModel {
     }
 
     func getCompletionRate(identityId: UUID, days: Int) -> Double {
+        guard let identity = appData.identities.first(where: { $0.id == identityId }) else {
+            return 0.0
+        }
+
         let today = Calendar.current.startOfDay(for: Date())
         var completedDays = 0
-        var totalDays = 0
 
         for dayOffset in 0..<days {
             if let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: today) {
-                totalDays += 1
-
                 if let log = appData.dailyLogs.first(where: { l in
                     Calendar.current.isDate(l.date, inSameDayAs: date)
                 }) {
@@ -126,7 +127,8 @@ class AppViewModel {
             }
         }
 
-        return totalDays > 0 ? Double(completedDays) / Double(totalDays) : 0.0
+        let target = identity.frequency.targetFor(days: days)
+        return target > 0 ? Double(completedDays) / target : 0.0
     }
 
     func getActionLog(for identity: Identity, date: Date) -> ActionLog? {

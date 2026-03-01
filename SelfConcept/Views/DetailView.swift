@@ -55,7 +55,7 @@ struct DetailView: View {
 
 #Preview {
     NavigationStack {
-        DetailView(identity: Identity(name: "I'm fit", action: "gym checkin"), windowSize: 7)
+        DetailView(identity: Identity(name: "I'm fit", action: "gym checkin", frequency: .perWeek(3)), windowSize: 7)
             .environment(AppViewModel())
     }
 }
